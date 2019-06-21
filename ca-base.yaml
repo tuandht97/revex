@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  ca-base:
+    environment:
+    - FABRIC_CA_HOME=/ca
+    - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=realestate_trit
+    command: fabric-ca-server start

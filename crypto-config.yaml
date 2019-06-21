@@ -1,0 +1,23 @@
+OrdererOrgs:
+  - Name: OrdererOrg
+    Domain: orderer-org
+    CommonName: orderer-org
+    Specs:
+      - Hostname: orderer0
+        CommonName: "{{.Hostname}}"
+PeerOrgs:
+  - Name: RealEstateOrg
+    Domain: realestate-org
+    Specs:
+      - Hostname: realestate-peer
+        CommonName: "{{.Hostname}}"
+  - Name: TraderOrg
+    Domain: trader-org
+    Specs:
+      - Hostname: trader-peer
+        CommonName: "{{.Hostname}}"
+  - Name: RegulatorOrg
+    Domain: regulator-org
+    Specs:
+      - Hostname: regulator-peer
+        CommonName: "{{.Hostname}}"

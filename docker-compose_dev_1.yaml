@@ -1,0 +1,69 @@
+version: '3.4'
+
+networks:
+  trit:
+    external:
+      name: trit
+
+services:
+  trader-ca:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/ca
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=trit
+    ports:
+      - 9054:7054
+    command: fabric-ca-server start
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./traderCA/:/ca/
+    networks:
+      trit:
+        aliases:
+          - trader-ca
+
+
+  trader-peer:
+    image: hyperledger/fabric-peer:latest
+    hostname: trader-peer
+    environment:
+      - CORE_PEER_ID=trader-peer
+      - CORE_PEER_ADDRESS=trader-peer:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=trader-peer:7051
+      - CORE_PEER_LOCALMSPID=TraderOrgMSP
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=trit
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_ENDORSER_ENABLED=true
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_MSPCONFIGPATH=/peer/crypto/msp
+      - CORE_PEER_TLS_CERT_FILE=/peer/crypto/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/peer/crypto/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/peer/crypto/tls/ca.crt
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    ports:
+      - 9051:7051
+      - 9053:7053
+    working_dir: /peer
+    command: peer node start
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./traderPeer/crypto:/peer/crypto
+    networks:
+      trit:
+        aliases:
+          - trader-peer
+
+
+
+
+
+

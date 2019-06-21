@@ -1,0 +1,9 @@
+{
+	"network-configs": {
+		"trit-network": {
+			"name": "TRIT NETWORK",
+			"profile": "./connection-profile/balance-transfer.json"
+		}
+	},
+	"license": "Apache-2.0"
+}

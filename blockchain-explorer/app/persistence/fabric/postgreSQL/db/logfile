@@ -1,0 +1,20 @@
+2019-06-08 20:15:32.803 +07 [4280] FATAL:  lock file "postmaster.pid" already exists
+2019-06-08 20:15:32.803 +07 [4280] HINT:  Is another postmaster (PID 4270) running in data directory "/usr/local/var/postgres"?
+2019-06-08 20:16:39.910 +07 [4295] FATAL:  lock file "postmaster.pid" already exists
+2019-06-08 20:16:39.910 +07 [4295] HINT:  Is another postmaster (PID 4270) running in data directory "/usr/local/var/postgres"?
+2019-06-08 20:17:59.216 +07 [4310] FATAL:  lock file "postmaster.pid" already exists
+2019-06-08 20:17:59.216 +07 [4310] HINT:  Is another postmaster (PID 4270) running in data directory "/usr/local/var/postgres"?
+2019-06-08 20:18:24.363 +07 [4319] FATAL:  lock file "postmaster.pid" already exists
+2019-06-08 20:18:24.363 +07 [4319] HINT:  Is another postmaster (PID 4270) running in data directory "/usr/local/var/postgres"?
+2019-06-08 20:19:19.891 +07 [4483] LOG:  listening on IPv6 address "::1", port 15432
+2019-06-08 20:19:19.891 +07 [4483] LOG:  listening on IPv4 address "127.0.0.1", port 15432
+2019-06-08 20:19:19.892 +07 [4483] LOG:  listening on Unix socket "/tmp/.s.PGSQL.15432"
+2019-06-08 20:19:19.909 +07 [4484] LOG:  database system was shut down at 2019-06-08 20:19:12 +07
+2019-06-08 20:19:19.912 +07 [4483] LOG:  database system is ready to accept connections
+2019-06-08 20:19:29.293 +07 [4507] FATAL:  role "hppoc" does not exist
+2019-06-08 20:19:33.866 +07 [4518] FATAL:  role "hppoc" does not exist
+2019-06-08 22:04:18.691 +07 [4555] FATAL:  terminating connection due to administrator command
+2019-06-08 22:04:18.692 +07 [4483] LOG:  received smart shutdown request
+2019-06-08 22:04:18.693 +07 [4483] LOG:  background worker "logical replication launcher" (PID 4490) exited with exit code 1
+2019-06-08 22:04:18.693 +07 [4485] LOG:  shutting down
+2019-06-08 22:04:18.701 +07 [4483] LOG:  database system is shut down
