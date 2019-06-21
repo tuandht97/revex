@@ -15,35 +15,61 @@ $PROJPATH/cryptogen generate --config=$PROJPATH/crypto-config.yaml --output=$CLI
 
 sh generate-cfgtx.sh
 
-rm -rf $PROJPATH/{orderer,realestatePeer,regulatorPeer,traderPeer}/crypto
-mkdir $PROJPATH/{orderer,realestatePeer,regulatorPeer,traderPeer}/crypto
-cp -r $ORDERERS/orderer-org/orderers/orderer0/{msp,tls} $PROJPATH/orderer/crypto
-cp -r $PEERS/realestate-org/peers/realestate-peer/{msp,tls} $PROJPATH/realestatePeer/crypto
-cp -r $PEERS/regulator-org/peers/regulator-peer/{msp,tls} $PROJPATH/regulatorPeer/crypto
-cp -r $PEERS/trader-org/peers/trader-peer/{msp,tls} $PROJPATH/traderPeer/crypto
+rm -rf $PROJPATH/orderer/crypto
+rm -rf $PROJPATH/bdsPeer/crypto
+rm -rf $PROJPATH/ccqPeer/crypto
+rm -rf $PROJPATH/traderPeer/crypto
+
+mkdir $PROJPATH/orderer/crypto
+mkdir $PROJPATH/bdsPeer/crypto
+mkdir $PROJPATH/ccqPeer/crypto
+mkdir $PROJPATH/traderPeer/crypto
+
+cp -r $ORDERERS/orderer-org/orderers/orderer0/msp $PROJPATH/orderer/crypto
+cp -r $PEERS/bds-org/peers/bds-peer/msp $PROJPATH/bdsPeer/crypto
+cp -r $PEERS/ccq-org/peers/ccq-peer/msp $PROJPATH/ccqPeer/crypto
+cp -r $PEERS/trader-org/peers/trader-peer/msp $PROJPATH/traderPeer/crypto
+
+cp -r $ORDERERS/orderer-org/orderers/orderer0/tls $PROJPATH/orderer/crypto
+cp -r $PEERS/bds-org/peers/bds-peer/tls $PROJPATH/bdsPeer/crypto
+cp -r $PEERS/ccq-org/peers/ccq-peer/tls $PROJPATH/ccqPeer/crypto
+cp -r $PEERS/trader-org/peers/trader-peer/tls $PROJPATH/traderPeer/crypto
 
 cp $CLIPATH/genesis.block $PROJPATH/orderer/crypto/
 
-REALESTATECAPATH=$PROJPATH/realestateCA
-REGULATORCAPATH=$PROJPATH/regulatorCA
+bdsCAPATH=$PROJPATH/bdsCA
+ccqCAPATH=$PROJPATH/ccqCA
 TRADERCAPATH=$PROJPATH/traderCA
 
 
-rm -rf {$REALESTATECAPATH,$REGULATORCAPATH,$TRADERCAPATH}/{ca,tls}
-mkdir -p {$REALESTATECAPATH,$REGULATORCAPATH,$TRADERCAPATH}/{ca,tls}
-cp $PEERS/realestate-org/ca/* $REALESTATECAPATH/ca
-cp $PEERS/realestate-org/tlsca/* $REALESTATECAPATH/tls
-mv $REALESTATECAPATH/ca/*_sk $REALESTATECAPATH/ca/key.pem
-mv $REALESTATECAPATH/ca/*-cert.pem $REALESTATECAPATH/ca/cert.pem
-mv $REALESTATECAPATH/tls/*_sk $REALESTATECAPATH/tls/key.pem
-mv $REALESTATECAPATH/tls/*-cert.pem $REALESTATECAPATH/tls/cert.pem
+rm -rf $bdsCAPATH/ca
+mkdir -p $bdsCAPATH/ca
+rm -rf $ccqCAPATH/ca
+mkdir -p $ccqCAPATH/ca
+rm -rf $TRADERCAPATH/ca
+mkdir -p $TRADERCAPATH/ca
 
-cp $PEERS/regulator-org/ca/* $REGULATORCAPATH/ca
-cp $PEERS/regulator-org/tlsca/* $REGULATORCAPATH/tls
-mv $REGULATORCAPATH/ca/*_sk $REGULATORCAPATH/ca/key.pem
-mv $REGULATORCAPATH/ca/*-cert.pem $REGULATORCAPATH/ca/cert.pem
-mv $REGULATORCAPATH/tls/*_sk $REGULATORCAPATH/tls/key.pem
-mv $REGULATORCAPATH/tls/*-cert.pem $REGULATORCAPATH/tls/cert.pem
+rm -rf $bdsCAPATH/tls
+mkdir -p $bdsCAPATH/tls
+rm -rf $ccqCAPATH/tls
+mkdir -p $ccqCAPATH/tls
+rm -rf $TRADERCAPATH/tls
+mkdir -p $TRADERCAPATH/tls
+
+
+cp $PEERS/bds-org/ca/* $bdsCAPATH/ca
+cp $PEERS/bds-org/tlsca/* $bdsCAPATH/tls
+mv $bdsCAPATH/ca/*_sk $bdsCAPATH/ca/key.pem
+mv $bdsCAPATH/ca/*-cert.pem $bdsCAPATH/ca/cert.pem
+mv $bdsCAPATH/tls/*_sk $bdsCAPATH/tls/key.pem
+mv $bdsCAPATH/tls/*-cert.pem $bdsCAPATH/tls/cert.pem
+
+cp $PEERS/ccq-org/ca/* $ccqCAPATH/ca
+cp $PEERS/ccq-org/tlsca/* $ccqCAPATH/tls
+mv $ccqCAPATH/ca/*_sk $ccqCAPATH/ca/key.pem
+mv $ccqCAPATH/ca/*-cert.pem $ccqCAPATH/ca/cert.pem
+mv $ccqCAPATH/tls/*_sk $ccqCAPATH/tls/key.pem
+mv $ccqCAPATH/tls/*-cert.pem $ccqCAPATH/tls/cert.pem
 
 cp $PEERS/trader-org/ca/* $TRADERCAPATH/ca
 cp $PEERS/trader-org/tlsca/* $TRADERCAPATH/tls
@@ -53,17 +79,17 @@ mv $TRADERCAPATH/tls/*_sk $TRADERCAPATH/tls/key.pem
 mv $TRADERCAPATH/tls/*-cert.pem $TRADERCAPATH/tls/cert.pem
 
 
-WEBCERTS=$PROJPATH/web/certs
-rm -rf $WEBCERTS
-mkdir -p $WEBCERTS
-cp $PROJPATH/orderer/crypto/tls/ca.crt $WEBCERTS/ordererOrg.pem
-cp $PROJPATH/realestatePeer/crypto/tls/ca.crt $WEBCERTS/realestateOrg.pem
-cp $PROJPATH/regulatorPeer/crypto/tls/ca.crt $WEBCERTS/regulatorOrg.pem
-cp $PROJPATH/traderPeer/crypto/tls/ca.crt $WEBCERTS/traderOrg.pem
+CERTS=$PROJPATH/certs
+rm -rf $CERTS
+mkdir -p $CERTS
+cp $PROJPATH/orderer/crypto/tls/ca.crt $CERTS/ordererOrg.pem
+cp $PROJPATH/bdsPeer/crypto/tls/ca.crt $CERTS/bdsOrg.pem
+cp $PROJPATH/ccqPeer/crypto/tls/ca.crt $CERTS/ccqOrg.pem
+cp $PROJPATH/traderPeer/crypto/tls/ca.crt $CERTS/traderOrg.pem
 
-cp $PEERS/realestate-org/users/Admin@realestate-org/msp/keystore/* $WEBCERTS/Admin@realestate-org-key.pem
-cp $PEERS/realestate-org/users/Admin@realestate-org/msp/signcerts/* $WEBCERTS/
-cp $PEERS/regulator-org/users/Admin@regulator-org/msp/keystore/* $WEBCERTS/Admin@regulator-org-key.pem
-cp $PEERS/regulator-org/users/Admin@regulator-org/msp/signcerts/* $WEBCERTS/
-cp $PEERS/trader-org/users/Admin@trader-org/msp/keystore/* $WEBCERTS/Admin@trader-org-key.pem
-cp $PEERS/trader-org/users/Admin@trader-org/msp/signcerts/* $WEBCERTS/
+cp $PEERS/bds-org/users/Admin@bds-org/msp/keystore/* $CERTS/Admin@bds-org-key.pem
+cp $PEERS/bds-org/users/Admin@bds-org/msp/signcerts/* $CERTS/
+cp $PEERS/ccq-org/users/Admin@ccq-org/msp/keystore/* $CERTS/Admin@ccq-org-key.pem
+cp $PEERS/ccq-org/users/Admin@ccq-org/msp/signcerts/* $CERTS/
+cp $PEERS/trader-org/users/Admin@trader-org/msp/keystore/* $CERTS/Admin@trader-org-key.pem
+cp $PEERS/trader-org/users/Admin@trader-org/msp/signcerts/* $CERTS/

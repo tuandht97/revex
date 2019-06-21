@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/x509"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/core/chaincode/shim/ext/cid"
 )
@@ -13,15 +14,12 @@ func getTxCreatorInfo(stub shim.ChaincodeStubInterface) (string, string, string,
 
 	mspID, err = cid.GetMSPID(stub)
 	if err != nil {
-		logger.Error("Error getting MSP identity: %s\n", err.Error())
-
 		return "", "", "", err
 	}
 
 	cert, err = cid.GetX509Certificate(stub)
 
 	if err != nil {
-		logger.Error("Error getting client certificate: %s\n", err.Error())
 		return "", "", "", err
 	}
 
@@ -31,21 +29,21 @@ func getTxCreatorInfo(stub shim.ChaincodeStubInterface) (string, string, string,
 // For now, just hardcode an ACL
 // We will support attribute checks in an upgrade
 
-func authenticateRealEstateOrg(mspID string, certCN string) bool {
+func authenticateBdsOrg(mspID string, certCN string) bool {
 
-	return (mspID == "RealEstateOrgMSP") && (certCN == "ca.realestate-org")
+	return (mspID == "BdsOrgMSP") && (certCN == "ca.bds-org")
 }
 
-func authenticateRegulatorOrg(mspID string, certCN string) bool {
+func authenticateCcqOrg(mspID string, certCN string) bool {
 
-	return (mspID == "RegulatorOrgMSP") && (certCN == "ca.regulator-org")
+	return (mspID == "CcqOrgMSP") && (certCN == "ca.ccq-org")
 }
 
 func authenticateTraderOrg(mspID string, certCN string) bool {
-	
+
 	return (mspID == "TraderOrgMSP") && (certCN == "ca.trader-org")
 }
 
 func authenticateShareholderOrg(mspID string, certCN string) bool {
-	return authenticateRealEstateOrg(mspID, certCN) || authenticateTraderOrg(mspID, certCN)
+	return authenticateBdsOrg(mspID, certCN) || authenticateTraderOrg(mspID, certCN)
 }

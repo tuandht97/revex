@@ -4,5 +4,5 @@ services:
   ca-base:
     environment:
     - FABRIC_CA_HOME=/ca
-    - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=realestate_trit
+    - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=revex_revex
     command: fabric-ca-server start

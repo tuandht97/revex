@@ -1,26 +1,4 @@
 ---
-Profiles:
-  FourOrgsGenesis:
-
-    Orderer:
-      <<: *OrdererDefaults
-      Organizations:
-      - *OrdererOrg
-    Consortiums:
-      RealEstateConsortium:
-        Organizations:
-        - *RealEstateOrg
-        - *TraderOrg
-        - *RegulatorOrg
-  FourOrgsChannel:
-
-    Consortium: RealEstateConsortium
-    Application:
-      <<: *ApplicationDefaults
-      Organizations:
-      - *RealEstateOrg
-      - *TraderOrg
-      - *RegulatorOrg
 
 Organizations:
 - &OrdererOrg
@@ -28,29 +6,28 @@ Organizations:
   ID: OrdererMSP
   MSPDir: cli/peers/ordererOrganizations/orderer-org/msp
 
-- &RealEstateOrg
-  Name: RealEstateOrgMSP
-  ID: RealEstateOrgMSP
-  MSPDir: cli/peers/peerOrganizations/realestate-org/msp
-
-
+- &BdsOrg
+  Name: BdsOrgMSP
+  ID: BdsOrgMSP
+  MSPDir: cli/peers/peerOrganizations/bds-org/msp
   AnchorPeers:
-  - Host: realestate-peer
+  - Host: bds-peer
     Port: 7051
+
 - &TraderOrg
   Name: TraderOrgMSP
   ID: TraderOrgMSP
   MSPDir: cli/peers/peerOrganizations/trader-org/msp
-
   AnchorPeers:
   - Host: trader-peer
     Port: 7051
-- &RegulatorOrg
-    Name: RegulatorOrgMSP
-    ID: RegulatorOrgMSP
-    MSPDir: cli/peers/peerOrganizations/regulator-org/msp
+
+- &CcqOrg
+    Name: CcqOrgMSP
+    ID: CcqOrgMSP
+    MSPDir: cli/peers/peerOrganizations/ccq-org/msp
     AnchorPeers:
-    - Host: regulator-peer
+    - Host: ccq-peer
       Port: 7051
 
 Orderer: &OrdererDefaults
@@ -67,7 +44,27 @@ Orderer: &OrdererDefaults
 Application: &ApplicationDefaults
   Organizations:
 
+Profiles:
+  ThreeOrgsGenesis:
 
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+      - *OrdererOrg
+    Consortiums:
+      RealEstateConsortium:
+        Organizations:
+        - *BdsOrg
+        - *TraderOrg
+        - *CcqOrg
+  ThreeOrgsChannel:
 
+    Consortium: RealEstateConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+      - *BdsOrg
+      - *TraderOrg
+      - *CcqOrg
 
 

@@ -18,7 +18,7 @@
 		}
 	},
 	"channels": {
-		"tritchannel": {
+		"revex": {
 			"orderers": ["orderer0"],
 			"peers": {
 				"trader-peer": {

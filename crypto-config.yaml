@@ -6,18 +6,18 @@ OrdererOrgs:
       - Hostname: orderer0
         CommonName: "{{.Hostname}}"
 PeerOrgs:
-  - Name: RealEstateOrg
-    Domain: realestate-org
+  - Name: BdsOrg
+    Domain: bds-org
     Specs:
-      - Hostname: realestate-peer
+      - Hostname: bds-peer
         CommonName: "{{.Hostname}}"
   - Name: TraderOrg
     Domain: trader-org
     Specs:
       - Hostname: trader-peer
         CommonName: "{{.Hostname}}"
-  - Name: RegulatorOrg
-    Domain: regulator-org
+  - Name: CcqOrg
+    Domain: ccq-org
     Specs:
-      - Hostname: regulator-peer
+      - Hostname: ccq-peer
         CommonName: "{{.Hostname}}"

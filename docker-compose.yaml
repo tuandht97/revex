@@ -1,19 +1,19 @@
 version: '2'
 
 networks:
-  trit:
+  revex:
 
 services:
-  realestate-ca:
-    container_name: realestate-ca
+  bds-ca:
+    container_name: bds-ca
     extends:
       file: ./ca-base.yaml
       service: ca-base
-    image: realestate-ca
+    image: bds-ca
     ports:
     - 7054:7054
     networks:
-      - trit
+      - revex
 
   trader-ca:
     container_name: trader-ca
@@ -24,18 +24,29 @@ services:
     ports:
     - 9054:7054
     networks:
-      - trit
+      - revex
 
-  regulator-ca:
-    container_name: regulator-ca
+  ccq-ca:
+    container_name: ccq-ca
     extends:
       file: ./ca-base.yaml
       service: ca-base
-    image: regulator-ca
+    image: ccq-ca
     ports:
     - 10054:7054
     networks:
-      - trit
+      - revex
+
+  bds-couchdb:
+    container_name: bds-couchdb
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 5984:5984
+    networks:
+      - revex
 
   orderer0:
     container_name: orderer0
@@ -56,30 +67,36 @@ services:
     ports:
     - 7050:7050
     depends_on:
-    - realestate-ca
+    - bds-ca
     - trader-ca
-    - regulator-ca
+    - ccq-ca
     networks:
-      - trit
+      - revex
 
-  realestate-peer:
-    container_name: realestate-peer
+  bds-peer:
+    container_name: bds-peer
     extends:
       file: ./peer-base.yaml
       service: peer-base
-    image: realestate-peer
+    image: bds-peer
     environment:
-    - CORE_PEER_ID=realestate-peer
-    - CORE_PEER_ADDRESS=realestate-peer:7051
-    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=realestate-peer:7051
-    - CORE_PEER_LOCALMSPID=RealEstateOrgMSP
+    - CORE_PEER_ID=bds-peer
+    - CORE_PEER_ADDRESS=bds-peer:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=bds-peer:7051
+    - CORE_PEER_LOCALMSPID=BdsOrgMSP
+
+    - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+    - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=bds-couchdb:5984
+    - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+    - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
     ports:
     - 7051:7051
     - 7053:7053
     depends_on:
     - orderer0
+    - bds-couchdb
     networks:
-      - trit
+      - revex
 
   trader-peer:
     container_name: trader-peer
@@ -97,30 +114,30 @@ services:
     - 9053:7053
     depends_on:
     - orderer0
-    - realestate-peer
+    - bds-peer
     networks:
-      - trit
+      - revex
 
-  regulator-peer:
-    container_name: regulator-peer
+  ccq-peer:
+    container_name: ccq-peer
     extends:
       file: ./peer-base.yaml
       service: peer-base
-    image: regulator-peer
+    image: ccq-peer
     environment:
-    - CORE_PEER_ID=regulator-peer
-    - CORE_PEER_ADDRESS=regulator-peer:7051
-    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=regulator-peer:7051
-    - CORE_PEER_LOCALMSPID=RegulatorOrgMSP
+    - CORE_PEER_ID=ccq-peer
+    - CORE_PEER_ADDRESS=ccq-peer:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=ccq-peer:7051
+    - CORE_PEER_LOCALMSPID=CcqOrgMSP
     ports:
     - 10051:7051
     - 10053:7053
     depends_on:
     - orderer0
-    - realestate-peer
+    - bds-peer
     - trader-peer
     networks:
-      - trit
+      - revex
   cli:
     container_name: cli
     image: hyperledger/fabric-tools
@@ -132,27 +149,26 @@ services:
       - FABRIC_LOGGING_SPEC=DEBUG
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=regulator-peer:7051
-      - CORE_PEER_LOCALMSPID=RegulatorOrgMSP
+      - CORE_PEER_ADDRESS=ccq-peer:7051
+      - CORE_PEER_LOCALMSPID=CcqOrgMSP
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/peer/crypto/peerOrganizations/regulator-org/peers/regulator-peer/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/peer/crypto/peerOrganizations/regulator-org/peers/regulator-peer/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/peer/crypto/peerOrganizations/regulator-org/peers/regulator-peer/tls/ca.crt
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/peer/crypto/peerOrganizations/regulator-org/users/Admin@regulator-org/msp
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/peer/crypto/peerOrganizations/ccq-org/peers/ccq-peer/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/peer/crypto/peerOrganizations/ccq-org/peers/ccq-peer/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/peer/crypto/peerOrganizations/ccq-org/peers/ccq-peer/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/peer/crypto/peerOrganizations/ccq-org/users/Admin@ccq-org/msp
     working_dir: /opt/gopath/
     command: /bin/bash
     volumes:
       - /var/run/:/host/var/run/
       - ./cli/chaincode/:/opt/gopath/src/github.com/chaincode
-      - ./cli/crypto:/opt/gopath/peer/crypto/
+      - ./cli/peers:/opt/gopath/peer/crypto/
       - ./cli/scripts:/opt/gopath/scripts/
-      - ./cli/channel-artifacts:/opt/gopath/channel-artifacts
     depends_on:
     - orderer0
-    - realestate-peer
+    - bds-peer
     - trader-peer
-    - regulator-peer
+    - ccq-peer
     networks:
-      - trit
+      - revex
 
 

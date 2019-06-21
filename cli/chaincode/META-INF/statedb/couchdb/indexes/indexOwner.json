@@ -1,0 +1,14 @@
+{
+    "index": {
+        "fields": [
+            "docType",
+            "symbol",
+            "type",
+            "timestamp",
+            "org"
+        ]
+    },
+    "ddoc": "revexDoc",
+    "name": "revex",
+    "type": "json"
+}

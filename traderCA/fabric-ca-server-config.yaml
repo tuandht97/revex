@@ -54,11 +54,11 @@ signing:
 csr:
   cn: fabric-ca-server
   names:
-  - C: VN
-    ST: "HA NOI"
-    L: "BACH KHOA"
-    O: "BK"
-    OU: "TRIT"
+    - C: VN
+      ST: "Ha Noi"
+      L: "Hai Ba Trung"
+      O: "Bach Khoa"
+      OU: "Revex"
   hosts:
   - trader-ca
   - localhost
