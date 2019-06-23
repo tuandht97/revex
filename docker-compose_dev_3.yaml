@@ -7,7 +7,7 @@ networks:
 
 
 services:
-  regulator-ca:
+  ccq-ca:
     image: hyperledger/fabric-ca:latest
     deploy:
       mode: replicated
@@ -15,10 +15,10 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - 10054:7054
+      - 70054:7054
     volumes:
       - /var/run/:/host/var/run/
-      - ./regulatorCA/:/ca/
+      - ./ccqCA/:/ca/
     environment:
       - FABRIC_CA_HOME=/ca
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=trit
@@ -26,16 +26,41 @@ services:
     networks:
       trit:
         aliases:
-          - regulator-ca
+          - ccq-ca
 
-  regulator-peer:
-    hostname: regulator-peer
+  ccq-couchdb:
+    container_name: ccq-couchdb
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=  
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      # placement:
+      #     constraints:
+      #         - node.hostname == $ORG1_HOSTNAME
+    ports:
+    - 5984:5984
+    networks:
+      bymn:
+        aliases:
+          - ccq-couchdb
+
+  ccq-peer:
+    hostname: ccq-peer
     image: hyperledger/fabric-peer:latest
     environment:
-      - CORE_PEER_ID=regulator-peer
-      - CORE_PEER_ADDRESS=regulator-peer:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=regulator-peer:7051
-      - CORE_PEER_LOCALMSPID=RegulatorOrgMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=ccq-couchdb:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+
+      - CORE_PEER_ID=ccq-peer
+      - CORE_PEER_ADDRESS=ccq-peer:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=ccq-peer:7051
+      - CORE_PEER_LOCALMSPID=CcqOrgMSP
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=trit
       - CORE_LOGGING_LEVEL=DEBUG
@@ -55,17 +80,17 @@ services:
         delay: 5s
         max_attempts: 3
     ports:
-      - 10051:7051
-      - 10053:7053
+      - 70051:7051
+      - 70053:7053
     working_dir: /peer
     command: peer node start
     volumes:
       - /var/run/:/host/var/run/
-      - ./regulatorPeer/crypto:/peer/crypto
+      - ./ccqPeer/crypto:/peer/crypto
     networks:
       trit:
         aliases:
-          - regulator-peer
+          - ccq-peer
 
 
 
@@ -79,13 +104,13 @@ services:
       - FABRIC_LOGGING_SPEC=DEBUG
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=regulator-peer:7051
-      - CORE_PEER_LOCALMSPID=RegulatorOrgMSP
+      - CORE_PEER_ADDRESS=ccq-peer:7051
+      - CORE_PEER_LOCALMSPID=CcqOrgMSP
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/peer/crypto/peerOrganizations/regulator-org/peers/regulator-peer/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/peer/crypto/peerOrganizations/regulator-org/peers/regulator-peer/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/peer/crypto/peerOrganizations/regulator-org/peers/regulator-peer/tls/ca.crt
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/peer/crypto/peerOrganizations/regulator-org/users/Admin@regulator-org/msp
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/peer/crypto/peerOrganizations/ccq-org/peers/ccq-peer/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/peer/crypto/peerOrganizations/ccq-org/peers/ccq-peer/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/peer/crypto/peerOrganizations/ccq-org/peers/ccq-peer/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/peer/crypto/peerOrganizations/ccq-org/users/Admin@ccq-org/msp
     working_dir: /opt/gopath/
     command: sleep 3600
     volumes:
