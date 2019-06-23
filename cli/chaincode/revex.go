@@ -154,22 +154,46 @@ func (t *SimpleChaincode) importBDS(stub shim.ChaincodeStubInterface, args []str
 	var revexs []revexBDS
 	err := json.Unmarshal([]byte(args[0]), &revexs)
 	if err != nil {
-		panic(err)
 		return shim.Error(err.Error())
 	}
 
-	fmt.Print(revexs)
-
 	i := 0
+	// Count data saved successfully
+	su := 0
 	for i < len(revexs) {
 		revexs[i].ObjectType = "revexBDS"
 		revexs[i].Org = "BDS"
 		revexKey := strings.Join([]string{revexs[i].Symbol, revexs[i].UserA, revexs[i].UserB, strconv.Itoa(revexs[i].TranType), strconv.Itoa(revexs[i].Timestamp), revexs[i].Org}, "-")
-		revexJSONasBytes, _ := json.Marshal(revexs[i])
-		stub.PutState(revexKey, revexJSONasBytes)
+
+		// ==== Check if data already exists ====
+		revexAsBytes, err := stub.GetState(revexKey)
+		if err != nil {
+			return shim.Error("Failed to get data: " + err.Error())
+		} else if revexAsBytes != nil {
+			fmt.Println("This revexBDS already exists: " + revexKey)
+			i = i + 1
+			continue
+		}
+
+		// Marshal data to JSON
+		revexJSONasBytes, err := json.Marshal(revexs[i])
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+
+		// Save data
+		err = stub.PutState(revexKey, revexJSONasBytes)
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+
+		su = su + 1
 		i = i + 1
 	}
 
+	if su < 1 {
+		return shim.Error("All data already exists")
+	}
 	return shim.Success(nil)
 }
 
@@ -177,19 +201,44 @@ func (t *SimpleChaincode) importCCQ(stub shim.ChaincodeStubInterface, args []str
 	var revexs []revexCCQ
 	err := json.Unmarshal([]byte(args[0]), &revexs)
 	if err != nil {
-		panic(err)
 		return shim.Error(err.Error())
 	}
 
 	i := 0
+	// Count data saved successfully
+	su := 0
 	for i < len(revexs) {
 		revexs[i].ObjectType = "revexCCQ"
 		revexs[i].Org = "CCQ"
 		revexKey := strings.Join([]string{revexs[i].Symbol, revexs[i].UserA, revexs[i].UserB, strconv.Itoa(revexs[i].TranType), strconv.Itoa(revexs[i].Timestamp), revexs[i].Org}, "-")
-		revexJSONasBytes, _ := json.Marshal(revexs[i])
-		stub.PutState(revexKey, revexJSONasBytes)
+
+		revexAsBytes, err := stub.GetState(revexKey)
+		if err != nil {
+			return shim.Error("Failed to get data: " + err.Error())
+		} else if revexAsBytes != nil {
+			fmt.Println("This revexCCQ already exists: " + revexKey)
+			i = i + 1
+			continue
+		}
+
+		// Marshal data to JSON
+		revexJSONasBytes, err := json.Marshal(revexs[i])
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+
+		// Save data
+		err = stub.PutState(revexKey, revexJSONasBytes)
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+
+		su = su + 1
 		i = i + 1
 	}
 
+	if su < 1 {
+		return shim.Error("All data already exists")
+	}
 	return shim.Success(nil)
 }
