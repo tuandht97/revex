@@ -19,7 +19,7 @@
 	},
 	"channels": {
 		"revex": {
-			"orderers": ["orderer0"],
+			"orderers": ["revex_orderer0"],
 			"peers": {
 				"trader-peer": {
 					"ledgerQuery": true
@@ -30,8 +30,8 @@
 	"organizations": {
 		"TraderOrgMSP": {
 			"mspid": "TraderOrgMSP",
-			"peers": ["trader-peer"],
-			"certificateAuthorities": ["trader-ca"],
+			"peers": ["revex_trader-peer"],
+			"certificateAuthorities": ["revex_trader-ca"],
 			"adminPrivateKey": {
 				"path": "crypto/peerOrganizations/trader-org/users/Admin@trader-org/msp/keystore/f767ff2d31798f6847f5538ff50eb9b05bca65159bcc00c8ca99d3612d5bf532_sk"
 			},
@@ -42,10 +42,10 @@
 	},
 
 	"peers": {
-		"trader-peer": {
+		"revex_trader-peer": {
 			"url": "grpcs://10.148.0.5:20051",
 			"grpcOptions": {
-				"ssl-target-name-override": "trader-peer"
+				"ssl-target-name-override": "revex_trader-peer"
 			},
 			"tlsCACerts": {
 				"path": "crypto/peerOrganizations/trader-org/tlsca/tlsca.trader-org-cert.pem"
@@ -53,7 +53,7 @@
 		}
 	},
 	"certificateAuthorities": {
-		"trader-ca": {
+		"revex_trader-ca": {
 			"url": "https://10.148.0.5:20054",
 			"httpOptions": {
 				"verify": false
