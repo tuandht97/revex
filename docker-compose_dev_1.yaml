@@ -38,7 +38,7 @@ services:
     ports:
     - 5984:5984
     networks:
-      bymn:
+      revex:
         aliases:
           - trader-couchdb
 
