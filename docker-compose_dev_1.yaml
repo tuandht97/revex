@@ -11,6 +11,16 @@ services:
     environment:
       - FABRIC_CA_HOME=/ca
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=revex
+
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+          constraints:
+              - node.hostname == chain-1
+              
     ports:
       - 20054:7054
     command: fabric-ca-server start
@@ -32,11 +42,12 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-      # placement:
-      #     constraints:
-      #         - node.hostname == $ORG1_HOSTNAME
+      placement:
+          constraints:
+              - node.hostname == chain-1
+
     ports:
-    - 5984:5984
+      - 5984:5984
     networks:
       revex:
         aliases:
@@ -73,6 +84,10 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
+      placement:
+        constraints:
+            - node.hostname == chain-1
+
     ports:
       - 20051:7051
       - 20053:7053

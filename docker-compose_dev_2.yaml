@@ -16,8 +16,12 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - node.hostname == chain-2
+
     ports:
-      - 30054:7054
+      - 20054:7054
     volumes:
       - /var/run/:/host/var/run/
       - ./bdsCA/:/ca/
@@ -37,9 +41,10 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-      # placement:
-      #     constraints:
-      #         - node.hostname == $ORG1_HOSTNAME
+      placement:
+        constraints:
+          - node.hostname == chain-2
+
     ports:
     - 5984:5984
     networks:
@@ -78,9 +83,13 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
+      placement:
+        constraints:
+          - node.hostname == chain-2
+
     ports:
-      - 30051:7051
-      - 30053:7053
+      - 20051:7051
+      - 20053:7053
     working_dir: /peer
     command: peer node start
     volumes:
