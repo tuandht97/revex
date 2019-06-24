@@ -42,10 +42,10 @@
 	},
 
 	"peers": {
-		"revex_trader-peer": {
+		"trader-peer": {
 			"url": "grpcs://10.148.0.5:20051",
 			"grpcOptions": {
-				"ssl-target-name-override": "revex_trader-peer"
+				"ssl-target-name-override": "trader-peer"
 			},
 			"tlsCACerts": {
 				"path": "crypto/peerOrganizations/trader-org/tlsca/tlsca.trader-org-cert.pem"
@@ -53,7 +53,7 @@
 		}
 	},
 	"certificateAuthorities": {
-		"revex_trader-ca": {
+		"trader-ca": {
 			"url": "https://10.148.0.5:20054",
 			"httpOptions": {
 				"verify": false
