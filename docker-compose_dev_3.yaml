@@ -123,9 +123,8 @@ services:
     volumes:
       - /var/run/:/host/var/run/
       - ./cli/chaincode/:/opt/gopath/src/github.com/chaincode
-      - ./cli/crypto:/opt/gopath/peer/crypto/
+      - ./cli/peers:/opt/gopath/peer/crypto/
       - ./cli/scripts:/opt/gopath/scripts/
-      - ./cli/channel-artifacts:/opt/gopath/channel-artifacts
     deploy:
       replicas: 1
       restart_policy:
@@ -135,7 +134,7 @@ services:
       placement:
         constraints:
           - node.hostname == chain-4
-          
+
     networks:
       revex:
         aliases:
