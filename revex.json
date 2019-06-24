@@ -1,0 +1,68 @@
+{
+	"name": "revex",
+	"version": "1.0.0",
+	"license": "Apache-2.0",
+	"client": {
+		"tlsEnable": true,
+		"adminUser": "admin",
+		"adminPassword": "adminpw",
+		"enableAuthentication": true,
+		"organization": "TraderOrgMSP",
+		"connection": {
+			"timeout": {
+				"peer": {
+					"endorser": "300"
+				},
+				"orderer": "300"
+			}
+		}
+	},
+	"channels": {
+		"revexchannel": {
+			"orderers": ["orderer0"],
+			"peers": {
+				"trader-peer": {
+					"ledgerQuery": true
+				}
+			}
+		}
+	},
+	"organizations": {
+		"TraderOrgMSP": {
+			"mspid": "TraderOrgMSP",
+			"peers": ["trader-peer"],
+			"certificateAuthorities": ["trader-ca"],
+			"adminPrivateKey": {
+				"path": "crypto/peerOrganizations/trader-org/users/Admin@trader-org/msp/keystore/f767ff2d31798f6847f5538ff50eb9b05bca65159bcc00c8ca99d3612d5bf532_sk"
+			},
+			"signedCert": {
+				"path": "crypto/peerOrganizations/trader-org/users/Admin@trader-org/msp/signcerts/Admin@trader-org-cert.pem"
+			}
+		}
+	},
+
+	"peers": {
+		"trader-peer": {
+			"url": "grpcs://10.148.0.5:20051",
+			"grpcOptions": {
+				"ssl-target-name-override": "trader-peer"
+			},
+			"tlsCACerts": {
+				"path": "crypto/peerOrganizations/trader-org/tlsca/tlsca.trader-org-cert.pem"
+			}
+		}
+	},
+	"certificateAuthorities": {
+		"trader-ca": {
+			"url": "https://10.148.0.5:20054",
+			"httpOptions": {
+				"verify": false
+			},
+			"tlsCACerts": {
+				"path": "crypto/peerOrganizations/trader-org/ca/ca.trader-org-cert.pem"
+			},
+
+			"caName": "trader-org"
+		}
+	}
+}
