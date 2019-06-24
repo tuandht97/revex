@@ -21,7 +21,7 @@ services:
           - node.hostname == chain-2
 
     ports:
-      - 20054:7054
+      - 30054:7054
     volumes:
       - /var/run/:/host/var/run/
       - ./bdsCA/:/ca/
@@ -46,7 +46,7 @@ services:
           - node.hostname == chain-2
 
     ports:
-    - 5984:5984
+    - 6984:5984
     networks:
       revex:
         aliases:
@@ -88,8 +88,8 @@ services:
           - node.hostname == chain-2
 
     ports:
-      - 20051:7051
-      - 20053:7053
+      - 30051:7051
+      - 30053:7053
     working_dir: /peer
     command: peer node start
     volumes:

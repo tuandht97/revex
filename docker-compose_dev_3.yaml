@@ -42,7 +42,7 @@ services:
       #     constraints:
       #         - node.hostname == $ORG1_HOSTNAME
     ports:
-    - 5984:5984
+    - 7984:5984
     networks:
       revex:
         aliases:
