@@ -17,7 +17,7 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - 70054:7054
+      - 20054:7054
     volumes:
       - /var/run/:/host/var/run/
       - ./bdsCA/:/ca/
@@ -79,8 +79,8 @@ services:
         delay: 5s
         max_attempts: 3
     ports:
-      - 70051:7051
-      - 70053:7053
+      - 20051:7051
+      - 20053:7053
     working_dir: /peer
     command: peer node start
     volumes:

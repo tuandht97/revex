@@ -33,7 +33,7 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - 70050:7050
+      - 20050:7050
     networks:
       revex:
         aliases:
