@@ -19,7 +19,7 @@
 	},
 	"channels": {
 		"revex": {
-			"orderers": ["revex_orderer0"],
+			"orderers": ["orderer0"],
 			"peers": {
 				"trader-peer": {
 					"ledgerQuery": true
@@ -30,8 +30,8 @@
 	"organizations": {
 		"TraderOrgMSP": {
 			"mspid": "TraderOrgMSP",
-			"peers": ["revex_trader-peer"],
-			"certificateAuthorities": ["revex_trader-ca"],
+			"peers": ["trader-peer"],
+			"certificateAuthorities": ["trader-ca"],
 			"adminPrivateKey": {
 				"path": "crypto/peerOrganizations/trader-org/users/Admin@trader-org/msp/keystore/f767ff2d31798f6847f5538ff50eb9b05bca65159bcc00c8ca99d3612d5bf532_sk"
 			},
@@ -42,8 +42,8 @@
 	},
 
 	"peers": {
-		"revex_trader-peer": {
-			"url": "grpcs://10.148.0.5:20051",
+		"trader-peer": {
+			"url": "grpcs://localhost:20051",
 			"grpcOptions": {
 				"ssl-target-name-override": "trader-peer"
 			},
@@ -53,8 +53,8 @@
 		}
 	},
 	"certificateAuthorities": {
-		"revex_trader-ca": {
-			"url": "https://10.148.0.5:20054",
+		"trader-ca": {
+			"url": "https://localhost:20054",
 			"httpOptions": {
 				"verify": false
 			},
