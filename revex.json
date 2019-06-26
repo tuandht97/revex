@@ -7,7 +7,7 @@
 		"adminUser": "admin",
 		"adminPassword": "adminpw",
 		"enableAuthentication": true,
-		"organization": "TraderOrgMSP",
+		"organization": "CcqOrgMSP",
 		"connection": {
 			"timeout": {
 				"peer": {
@@ -19,50 +19,50 @@
 	},
 	"channels": {
 		"revex": {
-			"orderers": ["revex_orderer0"],
+			"orderers": ["orderer0"],
 			"peers": {
-				"revex_trader-peer": {
+				"ccq-peer": {
 					"ledgerQuery": true
 				}
 			}
 		}
 	},
 	"organizations": {
-		"TraderOrgMSP": {
-			"mspid": "TraderOrgMSP",
-			"peers": ["revex_trader-peer"],
-			"certificateAuthorities": ["revex_trader-ca"],
+		"CcqOrgMSP": {
+			"mspid": "CcqOrgMSP",
+			"peers": ["ccq-peer"],
+			"certificateAuthorities": ["ccq-ca"],
 			"adminPrivateKey": {
-				"path": "crypto/peerOrganizations/trader-org/users/Admin@trader-org/msp/keystore/f767ff2d31798f6847f5538ff50eb9b05bca65159bcc00c8ca99d3612d5bf532_sk"
+				"path": "crypto/peerOrganizations/ccq-org/users/Admin@ccq-org/msp/keystore/0a65199e6463db20f38230855dbfb585c10c69de24cef72564d75fc98a1ea537_sk"
 			},
 			"signedCert": {
-				"path": "crypto/peerOrganizations/trader-org/users/Admin@trader-org/msp/signcerts/Admin@trader-org-cert.pem"
+				"path": "crypto/peerOrganizations/ccq-org/users/Admin@ccq-org/msp/signcerts/Admin@ccq-org-cert.pem"
 			}
 		}
 	},
 
 	"peers": {
-		"revex_trader-peer": {
-			"url": "grpcs://localhost:20051",
+		"ccq-peer": {
+			"url": "grpcs://localhost:40051",
 			"grpcOptions": {
-				"ssl-target-name-override": "trader-peer"
+				"ssl-target-name-override": "ccq-peer"
 			},
 			"tlsCACerts": {
-				"path": "crypto/peerOrganizations/trader-org/tlsca/tlsca.trader-org-cert.pem"
+				"path": "crypto/peerOrganizations/ccq-org/tlsca/tlsca.ccq-org-cert.pem"
 			}
 		}
 	},
 	"certificateAuthorities": {
-		"revex_trader-ca": {
-			"url": "https://localhost:20054",
+		"ccq-ca": {
+			"url": "https://localhost:40054",
 			"httpOptions": {
 				"verify": false
 			},
 			"tlsCACerts": {
-				"path": "crypto/peerOrganizations/trader-org/ca/ca.trader-org-cert.pem"
+				"path": "crypto/peerOrganizations/ccq-org/ca/ca.ccq-org-cert.pem"
 			},
 
-			"caName": "trader-org"
+			"caName": "ccq-org"
 		}
 	}
 }
