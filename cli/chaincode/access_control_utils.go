@@ -30,17 +30,14 @@ func getTxCreatorInfo(stub shim.ChaincodeStubInterface) (string, string, string,
 // We will support attribute checks in an upgrade
 
 func authenticateBdsOrg(mspID string, certCN string) bool {
-
 	return (mspID == "BdsOrgMSP") && (certCN == "ca.bds-org")
 }
 
 func authenticateCcqOrg(mspID string, certCN string) bool {
-
 	return (mspID == "CcqOrgMSP") && (certCN == "ca.ccq-org")
 }
 
 func authenticateTraderOrg(mspID string, certCN string) bool {
-
 	return (mspID == "TraderOrgMSP") && (certCN == "ca.trader-org")
 }
 

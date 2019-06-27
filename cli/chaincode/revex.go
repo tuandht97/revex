@@ -151,10 +151,20 @@ func (t *SimpleChaincode) getAll(stub shim.ChaincodeStubInterface) pb.Response {
 }
 
 func (t *SimpleChaincode) importBDS(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	var revexs []revexBDS
-	err := json.Unmarshal([]byte(args[0]), &revexs)
+
+	creatorOrg, creatorCertIssuer, _, err := getTxCreatorInfo(stub)
 	if err != nil {
 		return shim.Error(err.Error())
+	}
+
+	if !authenticateBdsOrg(creatorOrg, creatorCertIssuer) {
+		return shim.Error("Unauthorized")
+	}
+
+	var revexs []revexBDS
+	er := json.Unmarshal([]byte(args[0]), &revexs)
+	if er != nil {
+		return shim.Error(er.Error())
 	}
 
 	i := 0
