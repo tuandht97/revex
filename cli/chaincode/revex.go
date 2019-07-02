@@ -208,10 +208,20 @@ func (t *SimpleChaincode) importBDS(stub shim.ChaincodeStubInterface, args []str
 }
 
 func (t *SimpleChaincode) importCCQ(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	var revexs []revexCCQ
-	err := json.Unmarshal([]byte(args[0]), &revexs)
+
+	creatorOrg, creatorCertIssuer, _, err := getTxCreatorInfo(stub)
 	if err != nil {
 		return shim.Error(err.Error())
+	}
+
+	if !authenticateCcqOrg(creatorOrg, creatorCertIssuer) {
+		return shim.Error("Unauthorized")
+	}
+
+	var revexs []revexCCQ
+	er := json.Unmarshal([]byte(args[0]), &revexs)
+	if er != nil {
+		return shim.Error(er.Error())
 	}
 
 	i := 0
